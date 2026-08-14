@@ -1,5 +1,5 @@
 import { VortexLogo } from "./VortexLogo";
-import { Phone } from "lucide-react";
+import { Phone, Mail } from "lucide-react";
 
 export const Footer = () => {
   const go = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -31,6 +31,11 @@ export const Footer = () => {
               <a href="tel:+918262030386" className="flex items-center gap-2 hover:text-[#F0B90B] transition-colors"><Phone size={14} /> +91 82620 30386</a>
               <a href="tel:+917219450687" className="flex items-center gap-2 hover:text-[#F0B90B] transition-colors"><Phone size={14} /> +91 72194 50687</a>
               <a href="tel:0224567000" className="flex items-center gap-2 hover:text-[#F0B90B] transition-colors"><Phone size={14} /> 022 45670 0</a>
+            </div>
+            <div className="mt-5 space-y-2 font-mono text-sm text-white/70">
+              {["finance@vortexglobal.info", "adirajpatel@vortexglobal.info", "saurabhi.kumari@vortexglobal.info", "traders@vortexglobal.info"].map((em) => (
+                <a key={em} href={`mailto:${em}`} data-testid={`footer-email-${em}`} className="flex items-center gap-2 hover:text-[#F0B90B] transition-colors break-all"><Mail size={14} className="shrink-0" /> {em}</a>
+              ))}
             </div>
           </div>
 

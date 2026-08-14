@@ -52,6 +52,11 @@ export const LeadForm = () => {
               <div>+91 72194 50687</div>
               <div>022 45670 0</div>
             </div>
+            <div className="mt-5 space-y-2 font-mono text-sm text-white/60">
+              {["finance@vortexglobal.info", "adirajpatel@vortexglobal.info", "saurabhi.kumari@vortexglobal.info", "traders@vortexglobal.info"].map((em) => (
+                <a key={em} href={`mailto:${em}`} data-testid={`contact-email-${em}`} className="block hover:text-[#F0B90B] transition-colors break-all">{em}</a>
+              ))}
+            </div>
           </div>
         </Reveal>
 
