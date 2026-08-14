@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;800;900&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --vx-bg: #060606;
+  --vx-surface: #0C0C0C;
+  --vx-elev: #141414;
+  --vx-gold: #F0B90B;
+  --vx-gold-hi: #FCD535;
+  --vx-up: #0ECB81;
+  --vx-down: #F6465D;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-font-smoothing: antialiased; }
+
+body {
+  margin: 0;
+  background: var(--vx-bg);
+  color: #fff;
+  font-family: 'IBM Plex Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+.font-head { font-family: 'Unbounded', sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+::selection { background: var(--vx-gold); color: #000; }
+
+/* Subtle grain */
+.vx-grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Editorial outlined marquee */
+.vx-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.22);
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 900;
+}
+
+@keyframes vx-scroll-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.vx-marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: vx-scroll-x 28s linear infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #060606; }
+::-webkit-scrollbar-thumb { background: #1e1e1e; }
+::-webkit-scrollbar-thumb:hover { background: var(--vx-gold); }
+
+@media (prefers-reduced-motion: reduce) {
+  .vx-marquee-track { animation: none; }
+}
