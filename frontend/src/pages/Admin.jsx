@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { api } from "../lib/api";
 import { VortexLogo } from "../components/VortexLogo";
+import { ThemeSwitcher } from "../components/ThemeSwitcher";
 import { LogOut, RefreshCw, Loader2, Inbox } from "lucide-react";
 
 export default function Admin() {
@@ -54,18 +55,19 @@ export default function Admin() {
   };
 
   const inputCls =
-    "bg-transparent border-b border-white/20 text-white py-3 focus:outline-none focus:border-[#F0B90B] transition-colors w-full placeholder:text-white/30";
+    "vx-input bg-transparent border-b vx-border2 py-3 focus:outline-none focus:border-[#F0B90B] transition-colors w-full";
 
   if (!authed) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-6 bg-[#060606]">
+      <div className="min-h-screen flex items-center justify-center px-6 vx-bg">
+        <div className="absolute top-6 right-6"><ThemeSwitcher /></div>
         <div className="w-full max-w-md">
-          <Link to="/" className="flex items-center gap-3 mb-10">
+          <Link to="/" className="flex items-center gap-3 mb-10 vx-text">
             <VortexLogo size={34} />
             <span className="font-head font-extrabold text-lg">VORTEXGLOBAL<span className="text-[#F0B90B]">.</span></span>
           </Link>
           <p className="font-mono text-xs tracking-[0.2em] uppercase text-[#F0B90B] mb-3">/ Admin portal</p>
-          <h1 className="font-head text-3xl font-bold mb-10">Sign in to view leads</h1>
+          <h1 className="font-head text-3xl font-bold mb-10 vx-text">Sign in to view leads</h1>
           <form data-testid="admin-login-form" onSubmit={login} className="space-y-8">
             <input data-testid="admin-email" type="email" autoComplete="username" className={inputCls} placeholder="Email" value={creds.email} onChange={(e) => setCreds({ ...creds, email: e.target.value })} />
             <input data-testid="admin-password" type="password" autoComplete="current-password" className={inputCls} placeholder="Password" value={creds.password} onChange={(e) => setCreds({ ...creds, password: e.target.value })} />
@@ -79,51 +81,52 @@ export default function Admin() {
   }
 
   return (
-    <div data-testid="admin-dashboard" className="min-h-screen bg-[#060606]">
-      <header className="border-b border-white/10 sticky top-0 bg-[#060606]/90 backdrop-blur-xl z-10">
+    <div data-testid="admin-dashboard" className="min-h-screen vx-bg">
+      <header className="border-b vx-border sticky top-0 vx-header backdrop-blur-xl z-10">
         <div className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3 vx-text">
             <VortexLogo size={30} />
-            <span className="font-head font-extrabold">VORTEXGLOBAL<span className="text-[#F0B90B]">.</span> <span className="text-white/40 font-mono text-xs font-normal ml-1">ADMIN</span></span>
+            <span className="font-head font-extrabold">VORTEXGLOBAL<span className="text-[#F0B90B]">.</span> <span className="vx-faint font-mono text-xs font-normal ml-1">ADMIN</span></span>
           </Link>
           <div className="flex items-center gap-3">
-            <button data-testid="admin-refresh" onClick={loadLeads} className="border border-white/20 p-3 hover:border-[#F0B90B] transition-colors"><RefreshCw size={16} /></button>
-            <button data-testid="admin-logout" onClick={logout} className="border border-white/20 px-4 py-3 hover:border-[#F0B90B] transition-colors flex items-center gap-2 font-mono text-xs uppercase"><LogOut size={14} /> Logout</button>
+            <ThemeSwitcher />
+            <button data-testid="admin-refresh" onClick={loadLeads} className="border vx-border2 p-3 hover:border-[#F0B90B] transition-colors vx-text"><RefreshCw size={16} /></button>
+            <button data-testid="admin-logout" onClick={logout} className="border vx-border2 px-4 py-3 hover:border-[#F0B90B] transition-colors flex items-center gap-2 font-mono text-xs uppercase vx-text"><LogOut size={14} /> Logout</button>
           </div>
         </div>
       </header>
 
       <div className="max-w-7xl mx-auto px-6 md:px-10 py-12">
         <div className="flex items-baseline justify-between mb-8">
-          <h1 className="font-head text-3xl md:text-4xl font-bold">OTC Lead Requests</h1>
+          <h1 className="font-head text-3xl md:text-4xl font-bold vx-text">OTC Lead Requests</h1>
           <span data-testid="lead-count" className="font-mono text-[#F0B90B]">{leads.length} total</span>
         </div>
 
         {loading ? (
-          <div className="flex items-center gap-2 text-white/50 font-mono text-sm py-20 justify-center"><Loader2 className="animate-spin" size={18} /> Loading…</div>
+          <div className="flex items-center gap-2 vx-muted font-mono text-sm py-20 justify-center"><Loader2 className="animate-spin" size={18} /> Loading…</div>
         ) : leads.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 text-white/40 py-24 border border-white/10">
+          <div className="flex flex-col items-center gap-3 vx-faint py-24 border vx-border">
             <Inbox size={40} strokeWidth={1} />
             <span className="font-mono text-sm">No leads yet.</span>
           </div>
         ) : (
-          <div className="border border-white/10 overflow-x-auto">
+          <div className="border vx-border overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/10 font-mono text-xs uppercase tracking-wider text-white/40 text-left">
+                <tr className="border-b vx-border font-mono text-xs uppercase tracking-wider vx-faint text-left">
                   <th className="p-4">Name</th><th className="p-4">Email</th><th className="p-4">Phone</th><th className="p-4">Asset</th><th className="p-4">Volume</th><th className="p-4">Message</th><th className="p-4">Date</th>
                 </tr>
               </thead>
               <tbody>
                 {leads.map((l) => (
-                  <tr key={l.id} data-testid={`lead-row-${l.id}`} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                  <tr key={l.id} data-testid={`lead-row-${l.id}`} className="border-b vx-border vx-row-hover transition-colors vx-text">
                     <td className="p-4 font-medium">{l.name}</td>
-                    <td className="p-4 text-white/60">{l.email}</td>
-                    <td className="p-4 text-white/60 font-mono">{l.phone || "—"}</td>
+                    <td className="p-4 vx-muted">{l.email}</td>
+                    <td className="p-4 vx-muted font-mono">{l.phone || "—"}</td>
                     <td className="p-4"><span className="font-mono text-xs bg-[#F0B90B] text-black px-2 py-1">{l.asset}</span></td>
                     <td className="p-4 font-mono text-[#F0B90B]">{l.volume}</td>
-                    <td className="p-4 text-white/50 max-w-[220px] truncate">{l.message || "—"}</td>
-                    <td className="p-4 text-white/40 font-mono text-xs">{new Date(l.created_at).toLocaleDateString()}</td>
+                    <td className="p-4 vx-muted max-w-[220px] truncate">{l.message || "—"}</td>
+                    <td className="p-4 vx-faint font-mono text-xs">{new Date(l.created_at).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody>

@@ -26,16 +26,16 @@ export const Insights = () => {
   };
 
   return (
-    <section id="insights" data-testid="insights-section" className="py-24 md:py-32 border-t border-white/10 relative z-10 bg-[#060606]">
+    <section id="insights" data-testid="insights-section" className="py-24 md:py-32 border-t vx-border relative z-10 vx-bg">
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         <Reveal>
           <p className="font-mono text-xs tracking-[0.2em] uppercase text-[#F0B90B] mb-4 flex items-center gap-2">
             <Sparkles size={14} /> AI Market Desk · Powered by Claude
           </p>
-          <h2 className="font-head text-3xl md:text-5xl font-bold tracking-tight max-w-3xl">
+          <h2 className="font-head text-3xl md:text-5xl font-bold tracking-tight max-w-3xl vx-text">
             Instant institutional briefings.
           </h2>
-          <p className="mt-5 text-white/55 max-w-xl leading-relaxed">
+          <p className="mt-5 vx-muted max-w-xl leading-relaxed">
             Pick an asset and our AI desk generates a live briefing using current market data —
             no predictions, just clear OTC context.
           </p>
@@ -52,7 +52,7 @@ export const Insights = () => {
                   className={`font-mono text-sm px-5 py-4 border text-left transition-colors md:w-full flex items-center justify-between ${
                     active === a && data
                       ? "bg-[#F0B90B] text-black border-[#F0B90B]"
-                      : "border-white/15 text-white/70 hover:border-[#F0B90B]/60"
+                      : "vx-border2 vx-muted hover:border-[#F0B90B]/60"
                   }`}
                 >
                   <span className="font-bold">{a}</span>
@@ -63,18 +63,18 @@ export const Insights = () => {
           </div>
 
           <div className="md:col-span-8">
-            <div className="min-h-[280px] border border-white/10 bg-[#0C0C0C] p-8 md:p-10 relative">
+            <div className="min-h-[280px] border vx-border vx-surface p-8 md:p-10 relative">
               <AnimatePresence mode="wait">
                 {loading ? (
-                  <motion.div key="load" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-3 text-white/50 font-mono text-sm h-full">
+                  <motion.div key="load" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-3 vx-muted font-mono text-sm h-full">
                     <Loader2 className="animate-spin" size={18} /> Generating {active} briefing…
                   </motion.div>
                 ) : data ? (
                   <motion.div key={data.symbol + data.insight.slice(0, 8)} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} data-testid="insight-result">
                     <div className="flex items-center gap-4 mb-6">
-                      <span className="font-head font-black text-3xl">{data.symbol}</span>
+                      <span className="font-head font-black text-3xl vx-text">{data.symbol}</span>
                       {data.market && (
-                        <span className="font-mono text-sm flex items-center gap-2 text-white/70">
+                        <span className="font-mono text-sm flex items-center gap-2 vx-muted">
                           ${data.market.price?.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                           <span className="flex items-center gap-0.5" style={{ color: data.market.change >= 0 ? "#0ECB81" : "#F6465D" }}>
                             {data.market.change >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
@@ -84,12 +84,12 @@ export const Insights = () => {
                       )}
                     </div>
                     <div
-                      className="text-white/75 leading-relaxed text-sm md:text-base whitespace-pre-wrap"
-                      dangerouslySetInnerHTML={{ __html: data.insight.replace(/\*\*(.+?)\*\*/g, "<b class='text-white'>$1</b>") }}
+                      className="vx-muted leading-relaxed text-sm md:text-base whitespace-pre-wrap"
+                      dangerouslySetInnerHTML={{ __html: data.insight.replace(/\*\*(.+?)\*\*/g, "<b class='vx-text'>$1</b>") }}
                     />
                   </motion.div>
                 ) : (
-                  <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center h-full text-center gap-3 text-white/40">
+                  <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center h-full text-center gap-3 vx-faint">
                     <Sparkles size={32} strokeWidth={1} />
                     <p className="font-mono text-sm">Select an asset to generate an AI briefing.</p>
                   </motion.div>

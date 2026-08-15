@@ -3,8 +3,27 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Lenis from "lenis";
 import { Toaster } from "sonner";
+import { ThemeProvider, useTheme } from "./lib/theme";
 import Landing from "./pages/Landing";
 import Admin from "./pages/Admin";
+
+function ThemedToaster() {
+  const { resolved } = useTheme();
+  return (
+    <Toaster
+      theme={resolved}
+      position="top-right"
+      toastOptions={{
+        style: {
+          background: "rgb(var(--surface-rgb))",
+          border: "1px solid rgb(var(--line-rgb) / 0.12)",
+          color: "rgb(var(--fg-rgb))",
+          borderRadius: 0,
+        },
+      }}
+    />
+  );
+}
 
 function App() {
   useEffect(() => {
@@ -22,15 +41,17 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <Toaster theme="dark" position="top-right" toastOptions={{ style: { background: "#0C0C0C", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", borderRadius: 0 } }} />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/admin" element={<Admin />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <ThemeProvider>
+      <div className="App vx-bg">
+        <ThemedToaster />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/admin" element={<Admin />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </ThemeProvider>
   );
 }
 

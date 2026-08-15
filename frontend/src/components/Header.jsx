@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { VortexLogo } from "./VortexLogo";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 const NAV = [
   { label: "Services", id: "services" },
@@ -24,15 +25,19 @@ export const Header = () => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const onHero = !scrolled && pathname === "/";
+  const linkColor = onHero ? "text-white/70 hover:text-white" : "vx-muted hover:vx-text";
+  const logoColor = onHero ? "text-white" : "vx-text";
+
   return (
     <header
       data-testid="site-header"
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        scrolled ? "bg-[#060606]/85 backdrop-blur-xl border-b border-white/10" : "bg-transparent"
+        scrolled ? "vx-header backdrop-blur-xl border-b vx-border" : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
-        <Link to="/" data-testid="logo-link" className="flex items-center gap-3">
+        <Link to="/" data-testid="logo-link" className={`flex items-center gap-3 ${logoColor}`}>
           <VortexLogo size={34} />
           <span className="font-head font-extrabold text-lg tracking-tight leading-none">
             VORTEXGLOBAL<span className="text-[#F0B90B]">.</span>
@@ -46,7 +51,7 @@ export const Header = () => {
                 key={n.id}
                 data-testid={`nav-${n.id}`}
                 onClick={() => go(n.id)}
-                className="font-mono text-xs uppercase tracking-[0.15em] text-white/60 hover:text-[#F0B90B] transition-colors"
+                className={`font-mono text-xs uppercase tracking-[0.15em] transition-colors ${linkColor}`}
               >
                 {n.label}
               </button>
@@ -54,11 +59,12 @@ export const Header = () => {
           </nav>
         )}
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4 md:gap-5">
+          <ThemeSwitcher variant={onHero ? "hero" : "solid"} />
           <Link
             to="/admin"
             data-testid="admin-portal-link"
-            className="hidden sm:inline-block font-mono text-xs uppercase tracking-[0.15em] text-white/50 hover:text-white transition-colors"
+            className={`hidden sm:inline-block font-mono text-xs uppercase tracking-[0.15em] transition-colors ${linkColor}`}
           >
             Admin
           </Link>

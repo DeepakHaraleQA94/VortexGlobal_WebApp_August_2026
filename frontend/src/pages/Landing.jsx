@@ -14,7 +14,7 @@ import { ChatWidget } from "../components/ChatWidget";
 
 export default function Landing() {
   return (
-    <div data-testid="landing-page" className="vx-grain relative">
+    <div data-testid="landing-page" className="vx-grain relative vx-bg min-h-screen">
       <Header />
       <Hero />
       <PriceTicker />

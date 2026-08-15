@@ -23,11 +23,11 @@ const OFFICES = [
 ];
 
 export const Locations = () => (
-  <section id="locations" data-testid="locations-section" className="py-24 md:py-32 relative z-10 bg-[#060606]">
+  <section id="locations" data-testid="locations-section" className="py-24 md:py-32 relative z-10 vx-bg">
     <div className="max-w-7xl mx-auto px-6 md:px-10">
       <Reveal>
         <p className="font-mono text-xs tracking-[0.2em] uppercase text-[#F0B90B] mb-4">/ Office locations</p>
-        <h2 className="font-head text-3xl md:text-5xl font-bold tracking-tight max-w-3xl">
+        <h2 className="font-head text-3xl md:text-5xl font-bold tracking-tight max-w-3xl vx-text">
           Present across India's financial hubs.
         </h2>
       </Reveal>
@@ -37,7 +37,7 @@ export const Locations = () => (
           <Reveal key={o.city} delay={i * 0.1}>
             <div
               data-testid={`office-${o.city}`}
-              className="group relative h-[420px] border border-white/10 overflow-hidden"
+              className="group relative h-[420px] border vx-border overflow-hidden"
             >
               <img
                 src={o.img}
@@ -49,8 +49,8 @@ export const Locations = () => (
                 <span className="font-mono text-[10px] uppercase tracking-widest text-[#F0B90B] mb-2">
                   {o.tag}
                 </span>
-                <h3 className="font-head text-3xl font-bold mb-3">{o.city}</h3>
-                <div className="flex items-start gap-2 text-white/60 text-sm">
+                <h3 className="font-head text-3xl font-bold mb-3 text-white">{o.city}</h3>
+                <div className="flex items-start gap-2 text-white/70 text-sm">
                   <MapPin size={16} className="mt-0.5 shrink-0 text-[#F0B90B]" />
                   <span>{o.address}</span>
                 </div>

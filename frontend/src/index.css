@@ -3,10 +3,25 @@
 @tailwind components;
 @tailwind utilities;
 
+:root, html[data-theme="dark"] {
+  --bg-rgb: 6 6 6;
+  --surface-rgb: 12 12 12;
+  --surface2-rgb: 20 20 20;
+  --fg-rgb: 255 255 255;
+  --line-rgb: 255 255 255;
+  --bg: rgb(var(--bg-rgb));
+}
+
+html[data-theme="light"] {
+  --bg-rgb: 250 249 246;
+  --surface-rgb: 255 255 255;
+  --surface2-rgb: 243 242 238;
+  --fg-rgb: 15 18 22;
+  --line-rgb: 15 18 22;
+  --bg: rgb(var(--bg-rgb));
+}
+
 :root {
-  --vx-bg: #060606;
-  --vx-surface: #0C0C0C;
-  --vx-elev: #141414;
   --vx-gold: #F0B90B;
   --vx-gold-hi: #FCD535;
   --vx-up: #0ECB81;
@@ -14,21 +29,37 @@
 }
 
 * { box-sizing: border-box; }
-
 html { -webkit-font-smoothing: antialiased; }
 
 body {
   margin: 0;
-  background: var(--vx-bg);
-  color: #fff;
+  background: rgb(var(--bg-rgb));
+  color: rgb(var(--fg-rgb));
   font-family: 'IBM Plex Sans', sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.2s ease;
 }
 
 .font-head { font-family: 'Unbounded', sans-serif; }
 .font-mono { font-family: 'JetBrains Mono', monospace; }
 
 ::selection { background: var(--vx-gold); color: #000; }
+
+/* ---- Themed semantic utilities ---- */
+.vx-bg { background-color: rgb(var(--bg-rgb)); transition: background-color 0.25s ease; }
+.vx-surface { background-color: rgb(var(--surface-rgb)); transition: background-color 0.25s ease; }
+.vx-surface2 { background-color: rgb(var(--surface2-rgb)); transition: background-color 0.25s ease; }
+.vx-header { background-color: rgb(var(--bg-rgb) / 0.85); transition: background-color 0.25s ease; }
+.vx-text { color: rgb(var(--fg-rgb)); transition: color 0.2s ease; }
+.vx-muted { color: rgb(var(--fg-rgb) / 0.6); transition: color 0.2s ease; }
+.vx-faint { color: rgb(var(--fg-rgb) / 0.4); transition: color 0.2s ease; }
+.vx-border { border-color: rgb(var(--line-rgb) / 0.12); transition: border-color 0.25s ease; }
+.vx-border2 { border-color: rgb(var(--line-rgb) / 0.22); transition: border-color 0.25s ease; }
+.vx-line-bg { background-color: rgb(var(--line-rgb) / 0.12); }
+.vx-row-hover:hover { background-color: rgb(var(--fg-rgb) / 0.03); }
+
+.vx-input { color: rgb(var(--fg-rgb)); }
+.vx-input::placeholder { color: rgb(var(--fg-rgb) / 0.35); }
 
 /* Subtle grain */
 .vx-grain::before {
@@ -37,14 +68,14 @@ body {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.04;
+  opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* Editorial outlined marquee */
 .vx-outline {
   color: transparent;
-  -webkit-text-stroke: 1px rgba(255,255,255,0.22);
+  -webkit-text-stroke: 1px rgb(var(--fg-rgb) / 0.22);
   font-family: 'Unbounded', sans-serif;
   font-weight: 900;
 }
@@ -59,10 +90,9 @@ body {
   animation: vx-scroll-x 28s linear infinite;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: #060606; }
-::-webkit-scrollbar-thumb { background: #1e1e1e; }
+::-webkit-scrollbar-track { background: rgb(var(--bg-rgb)); }
+::-webkit-scrollbar-thumb { background: rgb(var(--fg-rgb) / 0.15); }
 ::-webkit-scrollbar-thumb:hover { background: var(--vx-gold); }
 
 @media (prefers-reduced-motion: reduce) {

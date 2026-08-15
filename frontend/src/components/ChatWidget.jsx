@@ -69,12 +69,12 @@ export const ChatWidget = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.96 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-24 right-6 z-[60] w-[calc(100vw-3rem)] sm:w-[400px] h-[560px] max-h-[75vh] bg-[#0C0C0C] border border-white/15 flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
+            className="fixed bottom-24 right-6 z-[60] w-[calc(100vw-3rem)] sm:w-[400px] h-[560px] max-h-[75vh] vx-surface border vx-border2 flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
           >
-            <div className="flex items-center gap-3 p-4 border-b border-white/10 bg-[#060606]">
+            <div className="flex items-center gap-3 p-4 border-b vx-border vx-bg">
               <VortexLogo size={28} />
               <div>
-                <div className="font-head font-bold text-sm leading-none">Vera</div>
+                <div className="font-head font-bold text-sm leading-none vx-text">Vera</div>
                 <div className="font-mono text-[10px] text-[#F0B90B] uppercase tracking-widest mt-1 flex items-center gap-1">
                   <Sparkles size={10} /> AI OTC Concierge
                 </div>
@@ -92,7 +92,7 @@ export const ChatWidget = () => {
                     className={`max-w-[85%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
                       m.role === "user"
                         ? "bg-[#F0B90B] text-black"
-                        : "bg-[#141414] text-white/85 border border-white/5"
+                        : "vx-surface2 vx-muted border vx-border"
                     }`}
                     dangerouslySetInnerHTML={{ __html: m.content.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>") }}
                   />
@@ -100,20 +100,20 @@ export const ChatWidget = () => {
               ))}
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-[#141414] border border-white/5 px-4 py-3 flex items-center gap-2 text-white/50">
+                  <div className="vx-surface2 border vx-border px-4 py-3 flex items-center gap-2 vx-muted">
                     <Loader2 size={14} className="animate-spin" /> <span className="text-xs font-mono">Vera is typing…</span>
                   </div>
                 </div>
               )}
             </div>
 
-            <form onSubmit={send} className="p-3 border-t border-white/10 flex items-center gap-2 bg-[#060606]">
+            <form onSubmit={send} className="p-3 border-t vx-border flex items-center gap-2 vx-bg">
               <input
                 data-testid="chat-input"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about OTC, USDT, tokens…"
-                className="flex-1 bg-transparent text-white text-sm py-2 px-2 focus:outline-none placeholder:text-white/30"
+                className="vx-input flex-1 bg-transparent text-sm py-2 px-2 focus:outline-none"
               />
               <button
                 data-testid="chat-send"

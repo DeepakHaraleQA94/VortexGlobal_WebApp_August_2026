@@ -45,7 +45,7 @@ export const Hero = () => {
           Vortex Crypto Services — Hinjewadi, Pune
         </motion.div>
 
-        <h1 className="font-head font-black uppercase tracking-tighter text-[12vw] md:text-[6vw] leading-[0.95]">
+        <h1 className="font-head font-black uppercase tracking-tighter text-[12vw] md:text-[6vw] leading-[0.95] text-white">
           {lines.map((l, i) => (
             <Line key={l} delay={0.4 + i * 0.15}>
               {i === 1 ? (
@@ -63,8 +63,9 @@ export const Hero = () => {
           transition={{ delay: 1.1, duration: 0.8 }}
           className="max-w-xl mt-8 text-base md:text-lg text-white/60 leading-relaxed"
         >
-          Deep-liquidity, over-the-counter desk for large USDT settlements and every major
-          token. Direct dealer-to-client execution — zero slippage, immediate settlement.
+          Deep-liquidity, over-the-counter desk for large USDT settlements and major digital
+          assets. Direct dealer-to-client execution with agreed-price trades and efficient
+          settlement.
         </motion.p>
 
         <motion.div
