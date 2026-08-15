@@ -40,7 +40,7 @@ export const Header = () => {
         <Link to="/" data-testid="logo-link" className={`flex items-center gap-3 ${logoColor}`}>
           <VortexLogo size={42} />
           <span className="font-head font-extrabold text-base sm:text-lg tracking-tight leading-tight">
-            VORTEX GLOBAL<span className="text-[#F0B90B]">.</span>
+            VORTEX GLOBAL
             <span className="hidden sm:block font-mono text-[8px] uppercase tracking-[0.2em] opacity-70 font-normal mt-0.5">Exchanges & Crypto Services</span>
           </span>
         </Link>

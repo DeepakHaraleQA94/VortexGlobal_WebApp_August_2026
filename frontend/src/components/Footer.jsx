@@ -23,7 +23,7 @@ export const Footer = () => {
             <div className="flex items-center gap-3 mb-4 vx-text">
               <VortexLogo size={44} />
               <span className="font-head font-extrabold text-lg leading-tight">
-                VORTEX GLOBAL<span className="text-[#F0B90B]">.</span>
+                VORTEX GLOBAL
                 <span className="block font-mono text-[9px] uppercase tracking-[0.2em] opacity-70 font-normal mt-1">Exchanges & Crypto Services</span>
               </span>
             </div>
@@ -31,8 +31,11 @@ export const Footer = () => {
               Vortex Global Exchanges & Crypto Services — institutional OTC settlement desk.
               Hinjewadi, Pune.
             </p>
-            <p className="mt-5 font-mono text-xs uppercase tracking-[0.15em] text-[#F0B90B]">
-              ✦ Client Trust Is Our Output
+            <p className="mt-6 text-sm vx-text leading-relaxed font-medium">
+              At Vortex Global Exchanges, client trust is not just our goal — it's our commitment.
+            </p>
+            <p className="mt-2 vx-muted text-xs leading-relaxed">
+              Building a trustworthy future in cryptocurrency — one client relationship at a time.
             </p>
           </div>
 

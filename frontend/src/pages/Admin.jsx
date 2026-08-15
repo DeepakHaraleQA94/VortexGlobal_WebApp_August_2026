@@ -64,7 +64,7 @@ export default function Admin() {
         <div className="w-full max-w-md">
           <Link to="/" className="flex items-center gap-3 mb-10 vx-text">
             <VortexLogo size={44} />
-            <span className="font-head font-extrabold text-lg leading-tight">VORTEX GLOBAL<span className="text-[#F0B90B]">.</span><span className="block font-mono text-[8px] uppercase tracking-[0.2em] opacity-70 font-normal mt-0.5">Exchanges & Crypto Services</span></span>
+            <span className="font-head font-extrabold text-lg leading-tight">VORTEX GLOBAL<span className="block font-mono text-[8px] uppercase tracking-[0.2em] opacity-70 font-normal mt-0.5">Exchanges & Crypto Services</span></span>
           </Link>
           <p className="font-mono text-xs tracking-[0.2em] uppercase text-[#F0B90B] mb-3">/ Admin portal</p>
           <h1 className="font-head text-3xl font-bold mb-10 vx-text">Sign in to view leads</h1>
@@ -86,7 +86,7 @@ export default function Admin() {
         <div className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 vx-text">
             <VortexLogo size={38} />
-            <span className="font-head font-extrabold">VORTEX GLOBAL<span className="text-[#F0B90B]">.</span> <span className="vx-faint font-mono text-xs font-normal ml-1">ADMIN</span></span>
+            <span className="font-head font-extrabold">VORTEX GLOBAL <span className="vx-faint font-mono text-xs font-normal ml-1">ADMIN</span></span>
           </Link>
           <div className="flex items-center gap-3">
             <ThemeSwitcher />

@@ -1,7 +1,7 @@
 import { ShieldCheck, Zap, Layers, Globe } from "lucide-react";
 
 const ITEMS = [
-  { icon: ShieldCheck, text: "Client Trust Is Our Output" },
+  { icon: ShieldCheck, text: "Client Trust — Our Commitment" },
   { icon: Zap, text: "Direct OTC Execution" },
   { icon: Layers, text: "USDT Settlement Specialists" },
   { icon: Globe, text: "Pune · Mumbai · Bangalore" },

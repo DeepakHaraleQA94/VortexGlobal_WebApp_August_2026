@@ -7,6 +7,7 @@ import { Services } from "../components/Services";
 import { Tokens } from "../components/Tokens";
 import { Manifesto } from "../components/Manifesto";
 import { Insights } from "../components/Insights";
+import { TrustBanner } from "../components/TrustBanner";
 import { EditorialMarquee } from "../components/EditorialMarquee";
 import { Locations } from "../components/Locations";
 import { LeadForm } from "../components/LeadForm";
@@ -27,6 +28,7 @@ export default function Landing() {
       <Insights />
       <EditorialMarquee />
       <Locations />
+      <TrustBanner />
       <LeadForm />
       <Footer />
       <ChatWidget />

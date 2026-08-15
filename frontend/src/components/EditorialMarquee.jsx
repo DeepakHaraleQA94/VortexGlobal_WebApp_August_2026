@@ -3,7 +3,7 @@ export const EditorialMarquee = () => (
     <div className="vx-marquee-track">
       {[0, 1].map((k) => (
         <span key={k} className="flex items-center">
-          {["VORTEX GLOBAL", "CLIENT TRUST IS OUR OUTPUT", "OTC EXECUTION DESK", "USDT SETTLEMENT", "PUNE · MUMBAI · BANGALORE"].map(
+          {["VORTEX GLOBAL", "CLIENT TRUST IS OUR COMMITMENT", "OTC EXECUTION DESK", "USDT SETTLEMENT", "PUNE · MUMBAI · BANGALORE"].map(
             (t, i) => (
               <span key={i} className="flex items-center">
                 <span className="vx-outline text-5xl md:text-8xl px-8 uppercase tracking-tight">{t}</span>
