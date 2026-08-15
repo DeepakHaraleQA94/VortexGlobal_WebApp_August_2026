@@ -62,7 +62,7 @@ export default function Admin() {
         <div className="w-full max-w-md">
           <Link to="/" className="flex items-center gap-3 mb-10">
             <VortexLogo size={34} />
-            <span className="font-head font-extrabold text-lg">VORTEX<span className="text-[#F0B90B]">.</span></span>
+            <span className="font-head font-extrabold text-lg">VORTEXGLOBAL<span className="text-[#F0B90B]">.</span></span>
           </Link>
           <p className="font-mono text-xs tracking-[0.2em] uppercase text-[#F0B90B] mb-3">/ Admin portal</p>
           <h1 className="font-head text-3xl font-bold mb-10">Sign in to view leads</h1>
@@ -84,7 +84,7 @@ export default function Admin() {
         <div className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <VortexLogo size={30} />
-            <span className="font-head font-extrabold">VORTEX<span className="text-[#F0B90B]">.</span> <span className="text-white/40 font-mono text-xs font-normal ml-1">ADMIN</span></span>
+            <span className="font-head font-extrabold">VORTEXGLOBAL<span className="text-[#F0B90B]">.</span> <span className="text-white/40 font-mono text-xs font-normal ml-1">ADMIN</span></span>
           </Link>
           <div className="flex items-center gap-3">
             <button data-testid="admin-refresh" onClick={loadLeads} className="border border-white/20 p-3 hover:border-[#F0B90B] transition-colors"><RefreshCw size={16} /></button>

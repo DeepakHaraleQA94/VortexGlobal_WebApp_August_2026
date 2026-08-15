@@ -24,7 +24,7 @@ export const Footer = () => {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <VortexLogo size={30} />
-              <span className="font-head font-extrabold text-lg">VORTEX<span className="text-[#F0B90B]">.</span></span>
+              <span className="font-head font-extrabold text-lg">VORTEXGLOBAL<span className="text-[#F0B90B]">.</span></span>
             </div>
             <p className="text-white/45 text-sm max-w-xs leading-relaxed">
               Vortex Crypto Services — institutional OTC settlement desk. Hinjewadi, Pune.

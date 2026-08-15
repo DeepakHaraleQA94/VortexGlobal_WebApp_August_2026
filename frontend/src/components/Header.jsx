@@ -35,7 +35,7 @@ export const Header = () => {
         <Link to="/" data-testid="logo-link" className="flex items-center gap-3">
           <VortexLogo size={34} />
           <span className="font-head font-extrabold text-lg tracking-tight leading-none">
-            VORTEX<span className="text-[#F0B90B]">.</span>
+            VORTEXGLOBAL<span className="text-[#F0B90B]">.</span>
           </span>
         </Link>
 
