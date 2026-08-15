@@ -139,6 +139,32 @@ COINS = {
     "solana": "SOL",
     "usd-coin": "USDC",
 }
+COIN_NAMES = {
+    "BTC": "Bitcoin",
+    "ETH": "Ethereum",
+    "USDT": "Tether",
+    "SOL": "Solana",
+    "USDC": "USD Coin",
+}
+
+
+def _liquidity_label(volume: float) -> str:
+    if volume >= 5e9:
+        return "Strong"
+    if volume >= 1e9:
+        return "Available"
+    if volume >= 1e8:
+        return "Moderate"
+    return "Limited"
+
+
+def _volatility_label(change: float) -> str:
+    a = abs(change or 0)
+    if a < 2:
+        return "Low"
+    if a < 6:
+        return "Moderate"
+    return "High"
 
 
 @api_router.get("/crypto/prices")
@@ -147,7 +173,7 @@ async def crypto_prices():
     if _price_cache["data"] and now - _price_cache["ts"] < 45:
         return _price_cache["data"]
     ids = ",".join(COINS.keys())
-    url = f"https://api.coingecko.com/api/v3/simple/price?ids={ids}&vs_currencies=usd&include_24hr_change=true"
+    url = f"https://api.coingecko.com/api/v3/simple/price?ids={ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true"
     try:
         async with httpx.AsyncClient(timeout=10) as c:
             r = await c.get(url)
@@ -160,6 +186,7 @@ async def crypto_prices():
                 "symbol": sym,
                 "price": d.get("usd", 0),
                 "change": round(d.get("usd_24h_change", 0) or 0, 2),
+                "volume": round(d.get("usd_24h_vol", 0) or 0, 2),
             })
         payload = {"prices": result, "updated": datetime.now(timezone.utc).isoformat()}
         _price_cache["data"] = payload
@@ -170,11 +197,11 @@ async def crypto_prices():
         if _price_cache["data"]:
             return _price_cache["data"]
         fallback = [
-            {"symbol": "BTC", "price": 97250.0, "change": 1.24},
-            {"symbol": "ETH", "price": 3410.5, "change": -0.82},
-            {"symbol": "USDT", "price": 1.0, "change": 0.01},
-            {"symbol": "SOL", "price": 205.3, "change": 3.15},
-            {"symbol": "USDC", "price": 1.0, "change": -0.0},
+            {"symbol": "BTC", "price": 97250.0, "change": 1.24, "volume": 32000000000},
+            {"symbol": "ETH", "price": 3410.5, "change": -0.82, "volume": 15000000000},
+            {"symbol": "USDT", "price": 1.0, "change": 0.01, "volume": 60000000000},
+            {"symbol": "SOL", "price": 205.3, "change": 3.15, "volume": 4200000000},
+            {"symbol": "USDC", "price": 1.0, "change": -0.0, "volume": 8000000000},
         ]
         return {"prices": fallback, "updated": datetime.now(timezone.utc).isoformat(), "fallback": True}
 
@@ -288,30 +315,111 @@ async def insights(payload: InsightRequest):
     if not EMERGENT_LLM_KEY:
         raise HTTPException(status_code=503, detail="AI is not configured")
     sym = payload.symbol.upper()
+    if sym not in COIN_NAMES:
+        raise HTTPException(status_code=404, detail="Asset not supported")
+
     prices = await crypto_prices()
     match = next((p for p in prices.get("prices", []) if p["symbol"] == sym), None)
-    price_line = (
-        f"Current market data for {sym}: ${match['price']} (24h change {match['change']}%)."
-        if match else f"{sym} is a token available on the Vortex OTC desk."
-    )
-    insight_client = LlmChat(
+    if not match:
+        raise HTTPException(status_code=502, detail="Market data unavailable")
+
+    name = COIN_NAMES[sym]
+    price = match.get("price", 0)
+    change = match.get("change", 0)
+    volume = match.get("volume", 0)
+    liquidity = _liquidity_label(volume)
+    volatility = _volatility_label(change)
+    direction = "up" if change >= 0 else "down"
+    updated = datetime.now(timezone.utc).isoformat()
+
+    market = {
+        "price": price,
+        "change": change,
+        "volume": volume,
+        "liquidity": liquidity,
+        "volatility": volatility,
+        "status": "Open · 24/7",
+    }
+
+    def _vol_str(v):
+        if v >= 1e9:
+            return f"${v / 1e9:.2f}B"
+        if v >= 1e6:
+            return f"${v / 1e6:.2f}M"
+        return f"${v:,.0f}"
+
+    key_factors = [
+        {"n": "01", "title": "Price Movement",
+         "detail": f"{sym} is trading at ${price:,.2f}, {direction} {abs(change):.2f}% over the last 24 hours."},
+        {"n": "02", "title": "Volume Activity",
+         "detail": f"24h traded volume is approximately {_vol_str(volume)} across global venues."},
+        {"n": "03", "title": "Liquidity Conditions",
+         "detail": f"Liquidity conditions indicate a {liquidity.lower()} depth profile based on recent volume."},
+        {"n": "04", "title": "Volatility",
+         "detail": f"24h market volatility is currently {volatility.lower()} at {abs(change):.2f}%."},
+        {"n": "05", "title": "Market Context",
+         "detail": "Digital-asset markets trade 24/7; execution conditions may vary with transaction size and timing."},
+    ]
+
+    client = LlmChat(
         api_key=EMERGENT_LLM_KEY,
         session_id=f"insight-{sym}-{int(time.time())}",
         system_message=VORTEX_CONTEXT,
     ).with_model("anthropic", CLAUDE_MODEL)
     prompt = (
-        f"{price_line}\n\nWrite a concise 3-4 sentence market briefing on {sym} for an institutional "
-        f"OTC client. Cover what the asset is, how the current 24h move reads, and why settling {sym} "
-        f"through Vortex's OTC desk (zero slippage, immediate settlement) makes sense for large size. "
-        f"Do NOT give price predictions or investment advice. Do NOT include any [[LEAD]] tag."
+        f"Current market data for {name} ({sym}):\n"
+        f"- Price: ${price:,.2f}\n- 24h change: {change:+.2f}% ({direction})\n"
+        f"- 24h volume: {_vol_str(volume)}\n- Liquidity: {liquidity}\n- Volatility: {volatility}\n\n"
+        "Write an institutional market briefing in TWO parts, separated by a line containing exactly '===OTC==='.\n\n"
+        "PART 1 (the market brief): 2-3 short neutral paragraphs describing recent price movement, trading "
+        "activity/volume, volatility and liquidity conditions as observations. Use neutral language like "
+        "'Price has moved...', 'Trading activity is currently...', 'Liquidity conditions indicate...'. "
+        "STRICTLY NO predictions, no buy/sell suggestions, no 'will rise/fall', no 'best time to trade', "
+        "no guarantees.\n\n"
+        "PART 2 (the OTC execution context): 1 short paragraph on indicative pricing, available liquidity, "
+        "spread and order-size considerations for larger OTC transactions. Note that 'execution conditions "
+        "may vary depending on transaction size, asset liquidity and prevailing market conditions.' Do NOT "
+        "claim guaranteed execution, zero slippage or guaranteed liquidity.\n\n"
+        "IMPORTANT OUTPUT RULES: Output ONLY the paragraph prose. Do NOT print any headings, titles, labels, "
+        "'PART 1'/'PART 2', 'AI MARKET BRIEF', 'OTC EXECUTION CONTEXT', asset-name headers, reference-price "
+        "lines, markdown, or '---' separators. Use only the single delimiter line ===OTC=== between the two "
+        "parts. Do NOT include any [[LEAD]] tag."
     )
     try:
-        text = await insight_client.send_message(UserMessage(text=prompt))
+        text = await client.send_message(UserMessage(text=prompt))
     except Exception as e:
         logger.error(f"Claude insight error: {e}")
         raise HTTPException(status_code=502, detail="AI request failed")
+
     text = re.sub(r"\[\[LEAD\]\].*", "", text, flags=re.DOTALL).strip()
-    return {"symbol": sym, "insight": text, "market": match}
+    if "===OTC===" in text:
+        brief, otc = text.split("===OTC===", 1)
+    else:
+        brief, otc = text, ("Execution conditions may vary depending on transaction size, asset liquidity "
+                            "and prevailing market conditions. Contact our OTC desk for indicative pricing.")
+
+    def _clean_section(t: str) -> str:
+        t = re.sub(r"(?im)^\s*\**\s*part\s*\d[^\n]*$", "", t)
+        t = re.sub(r"(?im)^\s*\**\s*(ai market brief|otc execution context)\s*\**\s*:?\s*$", "", t)
+        t = re.sub(r"(?im)^\s*-{3,}\s*$", "", t)
+        t = re.sub(r"(?im)^\s*vortex crypto services[^\n]*$", "", t)
+        t = re.sub(r"(?im)^\s*asset:\s*[^\n]*$", "", t)
+        t = re.sub(r"\n{3,}", "\n\n", t)
+        return t.strip()
+
+    brief = _clean_section(brief)
+    otc = _clean_section(otc)
+
+    return {
+        "symbol": sym,
+        "name": name,
+        "market": market,
+        "source": "CoinGecko" if not prices.get("fallback") else "CoinGecko (cached)",
+        "updated": updated,
+        "brief": brief.strip(),
+        "otc_context": otc.strip(),
+        "key_factors": key_factors,
+    }
 
 
 app.include_router(api_router)
