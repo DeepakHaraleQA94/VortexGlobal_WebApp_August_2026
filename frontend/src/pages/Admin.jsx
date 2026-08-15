@@ -7,7 +7,7 @@ import { LogOut, RefreshCw, Loader2, Inbox } from "lucide-react";
 
 export default function Admin() {
   const [authed, setAuthed] = useState(!!localStorage.getItem("vortex_token"));
-  const [creds, setCreds] = useState({ username: "", password: "" });
+  const [creds, setCreds] = useState({ email: "", password: "" });
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loggingIn, setLoggingIn] = useState(false);
@@ -67,7 +67,7 @@ export default function Admin() {
           <p className="font-mono text-xs tracking-[0.2em] uppercase text-[#F0B90B] mb-3">/ Admin portal</p>
           <h1 className="font-head text-3xl font-bold mb-10">Sign in to view leads</h1>
           <form data-testid="admin-login-form" onSubmit={login} className="space-y-8">
-            <input data-testid="admin-email" type="text" autoComplete="username" className={inputCls} placeholder="Username" value={creds.username} onChange={(e) => setCreds({ ...creds, username: e.target.value })} />
+            <input data-testid="admin-email" type="email" autoComplete="username" className={inputCls} placeholder="Email" value={creds.email} onChange={(e) => setCreds({ ...creds, email: e.target.value })} />
             <input data-testid="admin-password" type="password" autoComplete="current-password" className={inputCls} placeholder="Password" value={creds.password} onChange={(e) => setCreds({ ...creds, password: e.target.value })} />
             <button data-testid="admin-login-submit" disabled={loggingIn} className="bg-[#F0B90B] text-black font-bold uppercase tracking-wide px-8 py-4 hover:bg-[#FCD535] transition-colors w-full flex items-center justify-center gap-2 disabled:opacity-60">
               {loggingIn && <Loader2 size={16} className="animate-spin" />} Sign In
