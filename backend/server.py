@@ -63,7 +63,7 @@ class LeadCreate(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    username: str
     password: str
 
 
@@ -123,7 +123,7 @@ async def get_current_user(request: Request) -> dict:
         user = await db.users.find_one({"_id": ObjectId(payload["sub"])})
         if not user:
             raise HTTPException(status_code=401, detail="User not found")
-        return {"id": str(user["_id"]), "email": user["email"], "role": user.get("role", "admin")}
+        return {"id": str(user["_id"]), "username": user.get("username", ""), "role": user.get("role", "admin")}
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expired")
     except jwt.InvalidTokenError:
@@ -199,11 +199,11 @@ async def list_leads(user: dict = Depends(get_current_user)):
 # ---------- Auth routes ----------
 @api_router.post("/auth/login")
 async def login(payload: LoginRequest):
-    user = await db.users.find_one({"email": payload.email.lower()})
+    user = await db.users.find_one({"username": payload.username.strip().lower()})
     if not user or not verify_password(payload.password, user["password_hash"]):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
-    token = create_access_token(str(user["_id"]), user["email"])
-    return {"token": token, "user": {"email": user["email"], "role": user.get("role", "admin")}}
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+    token = create_access_token(str(user["_id"]), user["username"])
+    return {"token": token, "user": {"username": user["username"], "role": user.get("role", "admin")}}
 
 
 @api_router.get("/auth/me")
@@ -327,20 +327,22 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    await db.users.create_index("email", unique=True)
-    admin_email = os.environ["ADMIN_EMAIL"].lower()
+    await db.users.create_index("username", unique=True, sparse=True)
+    admin_user = os.environ["ADMIN_USERNAME"].strip().lower()
     admin_password = os.environ["ADMIN_PASSWORD"]
-    existing = await db.users.find_one({"email": admin_email})
+    # remove any stale admin accounts (e.g. old email-based logins)
+    await db.users.delete_many({"role": "admin", "username": {"$ne": admin_user}})
+    existing = await db.users.find_one({"username": admin_user})
     if existing is None:
         await db.users.insert_one({
-            "email": admin_email,
+            "username": admin_user,
             "password_hash": hash_password(admin_password),
             "role": "admin",
             "created_at": datetime.now(timezone.utc).isoformat(),
         })
         logger.info("Seeded admin user")
     elif not verify_password(admin_password, existing["password_hash"]):
-        await db.users.update_one({"email": admin_email}, {"$set": {"password_hash": hash_password(admin_password)}})
+        await db.users.update_one({"username": admin_user}, {"$set": {"password_hash": hash_password(admin_password)}})
         logger.info("Updated admin password")
 
 
