@@ -42,7 +42,7 @@ export const Hero = () => {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="font-mono text-xs md:text-sm tracking-[0.25em] uppercase text-[#F0B90B] mb-6"
         >
-          Vortex Crypto Services — Hinjewadi, Pune
+          Vortex Global Exchanges & Crypto Services — Hinjewadi, Pune
         </motion.div>
 
         <h1 className="font-head font-black uppercase tracking-tighter text-[12vw] md:text-[6vw] leading-[0.95] text-white">

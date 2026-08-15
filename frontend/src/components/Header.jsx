@@ -38,9 +38,10 @@ export const Header = () => {
     >
       <div className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
         <Link to="/" data-testid="logo-link" className={`flex items-center gap-3 ${logoColor}`}>
-          <VortexLogo size={34} />
-          <span className="font-head font-extrabold text-lg tracking-tight leading-none">
-            VORTEXGLOBAL<span className="text-[#F0B90B]">.</span>
+          <VortexLogo size={42} />
+          <span className="font-head font-extrabold text-base sm:text-lg tracking-tight leading-tight">
+            VORTEX GLOBAL<span className="text-[#F0B90B]">.</span>
+            <span className="hidden sm:block font-mono text-[8px] uppercase tracking-[0.2em] opacity-70 font-normal mt-0.5">Exchanges & Crypto Services</span>
           </span>
         </Link>
 

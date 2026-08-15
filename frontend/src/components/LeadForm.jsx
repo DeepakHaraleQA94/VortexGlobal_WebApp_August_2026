@@ -2,7 +2,9 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Reveal } from "./Reveal";
 import { api } from "../lib/api";
-import { Loader2 } from "lucide-react";
+import { Loader2, Phone, Mail } from "lucide-react";
+import { TelegramIcon, WhatsappIcon } from "./ContactIcons";
+import { PHONES, WHATSAPP, TELEGRAM, EMAILS } from "../lib/contacts";
 
 const ASSETS = ["USDT", "BTC", "ETH", "SOL", "USDC", "Other"];
 const empty = { name: "", email: "", phone: "", asset: "USDT", volume: "", message: "" };
@@ -47,28 +49,40 @@ export const LeadForm = () => {
               Tell us what you want to trade and the volume you're working with. Our desk will
               respond with a quote and settlement terms.
             </p>
-            <div className="mt-10 space-y-2 font-mono text-sm vx-muted">
-              <div>+91 82620 30386</div>
-              <div>+91 72194 50687</div>
-              <div>022 45670 0</div>
+            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 font-mono text-sm vx-muted">
+              <div>
+                <p className="text-xs uppercase tracking-widest vx-faint mb-2">Call</p>
+                <div className="space-y-1.5">
+                  {PHONES.map((p) => (
+                    <a key={p.href} href={p.href} data-testid={`contact-phone-${p.href}`} className="flex items-center gap-2 hover:text-[#F0B90B] transition-colors"><Phone size={13} className="shrink-0" /> {p.label}</a>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-widest vx-faint mb-2">WhatsApp</p>
+                <div className="space-y-1.5">
+                  {WHATSAPP.map((w) => (
+                    <a key={w.href} href={w.href} target="_blank" rel="noopener noreferrer" data-testid={`contact-whatsapp-${w.href}`} className="flex items-center gap-2 hover:text-[#F0B90B] transition-colors"><WhatsappIcon size={13} /> {w.label}</a>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-widest vx-faint mb-2">Telegram</p>
+                <div className="space-y-1.5">
+                  {TELEGRAM.map((t) => (
+                    <a key={t.href} href={t.href} target="_blank" rel="noopener noreferrer" data-testid={`contact-telegram-${t.label}`} className="flex items-center gap-2 hover:text-[#F0B90B] transition-colors"><TelegramIcon size={13} /> {t.label}</a>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-widest vx-faint mb-2">Email</p>
+                <div className="space-y-1.5">
+                  {EMAILS.map((em) => (
+                    <a key={em} href={`mailto:${em}`} data-testid={`contact-email-${em}`} className="flex items-center gap-2 hover:text-[#F0B90B] transition-colors break-all"><Mail size={13} className="shrink-0" /> {em}</a>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="mt-5 space-y-2 font-mono text-sm vx-muted">
-              {["finance@vortexglobal.info", "adirajpatel@vortexglobal.info", "saurabhi.kumari@vortexglobal.info", "traders@vortexglobal.info"].map((em) => (
-                <a key={em} href={`mailto:${em}`} data-testid={`contact-email-${em}`} className="block hover:text-[#F0B90B] transition-colors break-all">{em}</a>
-              ))}
-            </div>
-            <a
-              href="https://t.me/VortexGlobalServices"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-testid="contact-telegram"
-              className="mt-5 inline-flex items-center gap-2 font-mono text-sm vx-muted hover:text-[#F0B90B] transition-colors"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="shrink-0">
-                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-              </svg>
-              @VortexGlobalServices
-            </a>
           </div>
         </Reveal>
 
