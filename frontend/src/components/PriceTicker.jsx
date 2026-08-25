@@ -33,8 +33,8 @@ export const PriceTicker = () => {
           const up = p.change >= 0;
           return (
             <div key={i} className="flex items-center gap-3 px-8 py-4 border-r vx-border">
-              <span className="font-mono font-bold text-sm vx-text">{p.symbol}</span>
-              <span className="font-mono text-sm vx-muted">
+              <span className="font-mono font-bold text-sm text-[#F0B90B]">{p.symbol}</span>
+              <span className="font-mono text-sm vx-text">
                 ${p.price >= 1 ? p.price.toLocaleString(undefined, { maximumFractionDigits: 2 }) : p.price.toFixed(4)}
               </span>
               <span

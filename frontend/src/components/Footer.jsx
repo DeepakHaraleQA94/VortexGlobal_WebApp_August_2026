@@ -1,5 +1,5 @@
 import { VortexLogo } from "./VortexLogo";
-import { Phone, Mail } from "lucide-react";
+import { Phone, Mail, Linkedin } from "lucide-react";
 import { TelegramIcon, WhatsappIcon } from "./ContactIcons";
 import { PHONES, WHATSAPP, TELEGRAM, EMAILS } from "../lib/contacts";
 
@@ -37,6 +37,15 @@ export const Footer = () => {
             <p className="mt-2 vx-muted text-xs leading-relaxed">
               Building a trustworthy future in cryptocurrency — one client relationship at a time.
             </p>
+            <a
+              href="https://www.linkedin.com/company/vortex-global-exchanges"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="footer-linkedin"
+              className="mt-6 inline-flex items-center gap-2 border vx-border2 px-4 py-2.5 rounded-full font-mono text-xs uppercase tracking-[0.12em] vx-muted hover:border-[#F0B90B] hover:text-[#F0B90B] transition-colors"
+            >
+              <Linkedin size={14} /> LinkedIn Profile
+            </a>
           </div>
 
           <div className="space-y-6">

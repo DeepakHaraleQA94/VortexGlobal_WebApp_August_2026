@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import { ThemeProvider, useTheme } from "./lib/theme";
 import Landing from "./pages/Landing";
 import Admin from "./pages/Admin";
+import Company from "./pages/Company";
 
 function ThemedToaster() {
   const { resolved } = useTheme();
@@ -47,6 +48,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/company" element={<Company />} />
             <Route path="/admin" element={<Admin />} />
           </Routes>
         </BrowserRouter>

@@ -63,6 +63,13 @@ export const Header = () => {
         <div className="flex items-center gap-4 md:gap-5">
           <ThemeSwitcher variant={onHero ? "hero" : "solid"} />
           <Link
+            to="/company"
+            data-testid="nav-company-link"
+            className={`hidden md:inline-block font-mono text-xs uppercase tracking-[0.15em] transition-colors ${linkColor}`}
+          >
+            Company
+          </Link>
+          <Link
             to="/admin"
             data-testid="admin-portal-link"
             className={`hidden sm:inline-block font-mono text-xs uppercase tracking-[0.15em] transition-colors ${linkColor}`}
