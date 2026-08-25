@@ -422,8 +422,64 @@ async def insights(payload: InsightRequest):
     }
 
 
-app.include_router(api_router)
+DEFAULT_COMPANY = {
+    "name": "Vortex Global Exchanges & Crypto Services",
+    "headline": "Institutional OTC Crypto Settlement Desk · USDT Settlements · Digital Assets",
+    "location": "Hinjewadi, Pune, India",
+    "industry": "Financial Services · Crypto OTC",
+    "companySize": "11–50 employees",
+    "headquarters": "Hinjewadi, Pune, India",
+    "type": "Privately Held",
+    "specialtiesLine": "USDT Settlements · OTC Trading",
+    "linkedinUrl": "https://www.linkedin.com/company/vortex-global-exchanges",
+    "commitment": "Client Trust Is Our Commitment",
+    "about": [
+        "Vortex Global Exchanges & Crypto Services is an institutional Over-the-Counter (OTC) crypto settlement desk headquartered in Hinjewadi, Pune. We specialise in high-volume USDT buying, selling and settlement, alongside execution across major digital assets including BTC, ETH, SOL and USDC.",
+        "OTC trading is the direct buying and selling of assets between two parties through a dealer network rather than a centralized exchange — offering negotiated pricing, privacy, deep liquidity and coordinated settlement for larger transactions. From initial inquiry through execution and settlement, our desk provides dedicated support at every step.",
+    ],
+    "specialties": [
+        "Institutional OTC Trading", "USDT Settlement Services", "Digital Asset Trading",
+        "Fixed-Price Execution", "Liquidity & Block Trades", "Dealer-to-Client Execution",
+        "Coordinated Settlement", "BTC · ETH · SOL · USDC",
+    ],
+    "updates": [
+        {"tag": "Commitment", "text": "At Vortex Global Exchanges, client trust is not just our goal — it's our commitment. Building a trustworthy future in cryptocurrency, one client relationship at a time."},
+        {"tag": "Service", "text": "Institutional OTC desk for large USDT settlements and major digital assets — negotiated pricing, direct dealer execution and coordinated settlement."},
+        {"tag": "Coverage", "text": "Now serving institutional clients across Pune, Mumbai and Bangalore with dedicated trade support from inquiry through settlement."},
+    ],
+    "offices": [
+        {"city": "Pune (HQ)", "addr": "Magarpatta City, Aditi Garden, Hadapsar, Pune 411013"},
+        {"city": "Mumbai", "addr": "Bandra Kurla Complex, Mumbai 400051"},
+        {"city": "Bangalore", "addr": "108, Ramanashree Chambers, 37 Lady Curzon Road, Bangalore 560001"},
+    ],
+}
 
+
+async def get_company_doc():
+    doc = await db.company_profile.find_one({"_id": "singleton"})
+    if not doc:
+        doc = {"_id": "singleton", **DEFAULT_COMPANY}
+        await db.company_profile.insert_one(doc)
+    doc.pop("_id", None)
+    return doc
+
+
+@api_router.get("/company")
+async def company_get():
+    return await get_company_doc()
+
+
+@api_router.put("/company")
+async def company_put(payload: dict, user: dict = Depends(get_current_user)):
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    payload.pop("_id", None)
+    payload.pop("id", None)
+    await db.company_profile.update_one({"_id": "singleton"}, {"$set": payload}, upsert=True)
+    return await get_company_doc()
+
+
+app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
