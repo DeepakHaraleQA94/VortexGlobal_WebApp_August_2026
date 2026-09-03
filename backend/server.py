@@ -481,6 +481,19 @@ async def company_put(payload: dict, user: dict = Depends(get_current_user)):
 
 DEFAULT_ASSETS = {"usdt_balance": 56740.00, "inr_rate": 99.60}
 
+# Dummy transactions (newest first). offset_minutes = how long ago from "now",
+# so timestamps always render as today / 1-2 days back.
+DUMMY_TXNS = [
+    {"type": "receive", "amount": 3200, "counterparty": "Binance P2P — Client A", "note": "USDT credit", "balance_after": 56740, "offset_minutes": 18},
+    {"type": "withdraw", "amount": 1500, "counterparty": "TRC20 wallet TR7…9kQ", "note": "Client payout", "balance_after": 53540, "offset_minutes": 95},
+    {"type": "receive", "amount": 5000, "counterparty": "OTC Settlement — Client C", "note": "USDT credit", "balance_after": 55040, "offset_minutes": 240},
+    {"type": "withdraw", "amount": 2750, "counterparty": "ERC20 wallet 0x4a…2f1", "note": "Withdrawal", "balance_after": 50040, "offset_minutes": 610},
+    {"type": "receive", "amount": 1800, "counterparty": "Client D", "note": "USDT credit", "balance_after": 52790, "offset_minutes": 1120},
+    {"type": "withdraw", "amount": 4200, "counterparty": "Client E settlement", "note": "Withdrawal", "balance_after": 50990, "offset_minutes": 1600},
+    {"type": "receive", "amount": 6500, "counterparty": "Binance P2P — Client F", "note": "USDT credit", "balance_after": 55190, "offset_minutes": 2150},
+    {"type": "receive", "amount": 900, "counterparty": "Client G", "note": "USDT credit", "balance_after": 48690, "offset_minutes": 2750},
+]
+
 
 async def get_assets_doc():
     doc = await db.assets.find_one({"_id": "singleton"})
@@ -510,7 +523,14 @@ async def assets_get(user: dict = Depends(get_current_user)):
 async def assets_txns(user: dict = Depends(get_current_user)):
     if user.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
-    docs = await db.asset_transactions.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    docs = await db.asset_transactions.find({}, {"_id": 0}).to_list(200)
+    now = datetime.now(timezone.utc)
+    for d in docs:
+        if d.get("dummy"):
+            d["created_at"] = (now - timedelta(minutes=d.get("offset_minutes", 0))).isoformat()
+        d.pop("offset_minutes", None)
+        d.pop("dummy", None)
+    docs.sort(key=lambda x: x.get("created_at", ""), reverse=True)
     return docs
 
 
@@ -576,6 +596,12 @@ async def startup():
     elif not verify_password(admin_password, existing["password_hash"]):
         await db.users.update_one({"email": admin_email}, {"$set": {"password_hash": hash_password(admin_password)}})
         logger.info("Updated admin password")
+
+    # seed dummy asset transactions once (so Recent Transactions looks live)
+    if await db.asset_transactions.count_documents({}) == 0:
+        for t in DUMMY_TXNS:
+            await db.asset_transactions.insert_one({"id": str(uuid.uuid4()), "dummy": True, **t})
+        logger.info("Seeded dummy asset transactions")
 
 
 @app.on_event("shutdown")
