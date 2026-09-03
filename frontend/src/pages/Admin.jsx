@@ -7,6 +7,25 @@ import { ThemeSwitcher } from "../components/ThemeSwitcher";
 import { AssetsPanel } from "../components/AssetsPanel";
 import { LogOut, RefreshCw, Loader2, Inbox } from "lucide-react";
 
+const maskEmail = (e) => {
+  if (!e || !e.includes("@")) return e || "—";
+  const [u, d] = e.split("@");
+  return `${u.slice(0, 2)}****@****.${d.split(".").pop()}`;
+};
+const maskPhone = (p) => {
+  const s = (p || "").replace(/\s+/g, "");
+  if (s.length < 7) return p || "—";
+  return `${s.slice(0, 5)}****${s.slice(-2)}`;
+};
+const fmtDateTime = (iso) => {
+  try {
+    return new Date(iso).toLocaleString("en-GB", {
+      day: "2-digit", month: "2-digit", year: "2-digit",
+      hour: "2-digit", minute: "2-digit", hour12: false,
+    });
+  } catch { return "—"; }
+};
+
 export default function Admin() {
   const [authed, setAuthed] = useState(!!localStorage.getItem("vortex_token"));
   const [tab, setTab] = useState("enquiries");
@@ -140,12 +159,12 @@ export default function Admin() {
                 {leads.map((l) => (
                   <tr key={l.id} data-testid={`lead-row-${l.id}`} className="border-b vx-border vx-row-hover transition-colors vx-text">
                     <td className="p-4 font-medium">{l.name}</td>
-                    <td className="p-4 vx-muted">{l.email}</td>
-                    <td className="p-4 vx-muted font-mono">{l.phone || "—"}</td>
+                    <td className="p-4 vx-muted">{maskEmail(l.email)}</td>
+                    <td className="p-4 vx-muted font-mono">{maskPhone(l.phone)}</td>
                     <td className="p-4"><span className="font-mono text-xs bg-[#F0B90B] text-black px-2 py-1">{l.asset}</span></td>
                     <td className="p-4 font-mono text-[#F0B90B]">{l.volume}</td>
                     <td className="p-4 vx-muted max-w-[220px] truncate">{l.message || "—"}</td>
-                    <td className="p-4 vx-faint font-mono text-xs">{new Date(l.created_at).toLocaleDateString()}</td>
+                    <td className="p-4 vx-faint font-mono text-xs">{fmtDateTime(l.created_at)}</td>
                   </tr>
                 ))}
               </tbody>

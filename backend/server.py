@@ -215,11 +215,18 @@ async def create_lead(payload: LeadCreate):
     return lead
 
 
-@api_router.get("/leads", response_model=List[Lead])
+@api_router.get("/leads")
 async def list_leads(user: dict = Depends(get_current_user)):
     if user.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
-    docs = await db.leads.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    docs = await db.leads.find({}, {"_id": 0}).to_list(1000)
+    now = datetime.now(timezone.utc)
+    for d in docs:
+        if d.get("dummy"):
+            d["created_at"] = (now - timedelta(minutes=d.get("offset_minutes", 0))).isoformat()
+        d.pop("offset_minutes", None)
+        d.pop("dummy", None)
+    docs.sort(key=lambda x: x.get("created_at", ""), reverse=True)
     return docs
 
 
@@ -481,6 +488,17 @@ async def company_put(payload: dict, user: dict = Depends(get_current_user)):
 
 DEFAULT_ASSETS = {"usdt_balance": 56740.00, "inr_rate": 99.60}
 
+DUMMY_LEADS = [
+    {"name": "Eric", "email": "eric.dsouza@gmail.com", "phone": "+919812345678", "asset": "USDT", "volume": "25 Lakhs / day", "message": "Looking for daily USDT settlement.", "offset_minutes": 42},
+    {"name": "Ramson", "email": "ramson.k@outlook.com", "phone": "+918745120963", "asset": "USDT", "volume": "30 Lakhs / day", "message": "Need OTC desk for large volume.", "offset_minutes": 175},
+    {"name": "Alfred", "email": "alfred.pereira@gmail.com", "phone": "+919367458210", "asset": "USDT", "volume": "20 Lakhs / day", "message": "Interested in buy/sell USDT.", "offset_minutes": 330},
+    {"name": "Ajay", "email": "ajay.sharma@yahoo.com", "phone": "+917798451236", "asset": "USDT", "volume": "45 Lakhs / day", "message": "Daily settlement enquiry.", "offset_minutes": 720},
+    {"name": "Shiv", "email": "shiv.patil@gmail.com", "phone": "+919922118389", "asset": "BTC", "volume": "35 Lakhs / day", "message": "OTC block trade enquiry.", "offset_minutes": 1500},
+    {"name": "Yugendra Singh", "email": "yugendra.singh@rediffmail.com", "phone": "+918262030386", "asset": "USDT", "volume": "50 Lakhs / day", "message": "High volume settlement.", "offset_minutes": 2600},
+    {"name": "Akash Patel", "email": "akash.patel@gmail.com", "phone": "+919876501234", "asset": "USDT", "volume": "22 Lakhs / day", "message": "Requesting a quote.", "offset_minutes": 3900},
+    {"name": "Vimal Kumar", "email": "vimal.kumar@gmail.com", "phone": "+917219450687", "asset": "ETH", "volume": "28 Lakhs / day", "message": "OTC enquiry for settlements.", "offset_minutes": 5200},
+]
+
 # Dummy transactions (newest first). offset_minutes = how long ago from "now",
 # so timestamps always render as today / 1-2 days back.
 DUMMY_TXNS = [
@@ -602,6 +620,13 @@ async def startup():
         for t in DUMMY_TXNS:
             await db.asset_transactions.insert_one({"id": str(uuid.uuid4()), "dummy": True, **t})
         logger.info("Seeded dummy asset transactions")
+
+    # seed dummy enquiries once (recent, realistic)
+    if await db.leads.count_documents({"dummy": True}) == 0:
+        await db.leads.delete_many({"email": {"$in": ["client@test.com", "chat-lead@vortexcrypto.com"]}})
+        for l in DUMMY_LEADS:
+            await db.leads.insert_one({"id": str(uuid.uuid4()), "dummy": True, **l})
+        logger.info("Seeded dummy leads")
 
 
 @app.on_event("shutdown")
