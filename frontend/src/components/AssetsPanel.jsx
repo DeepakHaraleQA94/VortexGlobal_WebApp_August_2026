@@ -48,42 +48,45 @@ export const AssetsPanel = () => {
 
       {/* Balance card */}
       <div className="border vx-border vx-surface overflow-hidden">
-        <div className="p-8 md:p-10" style={{ background: "linear-gradient(120deg, rgba(240,185,11,0.10), transparent 60%)" }}>
-          <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] vx-faint mb-4">
-            <Wallet size={15} className="text-[#F0B90B]" /> Available USDT Stock
-          </div>
-          <div className="flex items-end gap-3 flex-wrap">
-            <span data-testid="assets-usdt-balance" className="font-mono font-bold text-4xl md:text-6xl vx-text tracking-tight">
-              {fmt(data.usdt_balance)}
-            </span>
-            <span className="font-head font-bold text-xl md:text-2xl text-[#F0B90B] mb-1">USDT</span>
-          </div>
+        <div className="p-8 md:p-12 relative overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(240,185,11,0.14), transparent 55%)" }}>
+          <div className="absolute -right-16 -top-20 w-72 h-72 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(240,185,11,0.18), transparent 70%)" }} />
+          <div className="relative">
+            <div className="flex items-center gap-2.5 font-mono text-xs md:text-sm uppercase tracking-[0.25em] font-semibold text-[#F0B90B] mb-5">
+              <Wallet size={18} /> Available USDT Stock
+            </div>
+            <div className="flex items-end gap-3 flex-wrap">
+              <span data-testid="assets-usdt-balance" className="font-head font-black text-5xl md:text-7xl vx-text tracking-tighter leading-none" style={{ textShadow: "0 2px 30px rgba(240,185,11,0.18)" }}>
+                {fmt(data.usdt_balance)}
+              </span>
+              <span className="font-head font-black text-2xl md:text-3xl text-[#F0B90B] mb-1.5">USDT</span>
+            </div>
 
-          {/* INR value */}
-          <div className="mt-5 flex items-center gap-2 font-mono text-sm">
-            <TrendingUp size={15} className="text-[#0ECB81]" />
-            <span data-testid="assets-inr-value" className="vx-muted">
-              ≈ ₹{fmt(data.inr_value)}
-            </span>
-            <span className="vx-faint text-xs">( {fmt(data.usdt_balance)} × {data.inr_rate} )</span>
-          </div>
+            {/* INR volume */}
+            <div className="mt-6 inline-flex items-center gap-3 border vx-border2 px-5 py-3">
+              <TrendingUp size={18} className="text-[#0ECB81]" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] vx-faint">INR Volume</span>
+              <span data-testid="assets-inr-value" className="font-head font-black text-xl md:text-2xl vx-text">
+                ₹{fmt(data.inr_value)}
+              </span>
+            </div>
 
-          {/* Binance-style actions */}
-          <div className="mt-8 flex flex-wrap gap-3">
-            {Object.entries(ACTIONS).map(([key, a]) => (
-              <button
-                key={key}
-                data-testid={`assets-${key}-btn`}
-                onClick={() => setAction(key)}
-                className={`inline-flex items-center gap-2 font-bold text-sm px-6 py-3 transition-colors ${
-                  key === "withdraw"
-                    ? "bg-[#F0B90B] text-black hover:bg-[#FCD535]"
-                    : "border vx-border2 vx-text hover:border-[#F0B90B]"
-                }`}
-              >
-                <a.icon size={16} /> {a.label}
-              </button>
-            ))}
+            {/* Binance-style actions */}
+            <div className="mt-8 flex flex-wrap gap-3">
+              {Object.entries(ACTIONS).map(([key, a]) => (
+                <button
+                  key={key}
+                  data-testid={`assets-${key}-btn`}
+                  onClick={() => setAction(key)}
+                  className={`inline-flex items-center gap-2 font-bold text-sm px-7 py-3.5 transition-all hover:-translate-y-0.5 ${
+                    key === "withdraw"
+                      ? "bg-[#F0B90B] text-black hover:bg-[#FCD535] shadow-[0_8px_24px_rgba(240,185,11,0.3)]"
+                      : "border vx-border2 vx-text hover:border-[#F0B90B]"
+                  }`}
+                >
+                  <a.icon size={16} /> {a.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
