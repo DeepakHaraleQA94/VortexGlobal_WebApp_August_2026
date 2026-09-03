@@ -4,10 +4,12 @@ import { toast } from "sonner";
 import { api } from "../lib/api";
 import { VortexLogo } from "../components/VortexLogo";
 import { ThemeSwitcher } from "../components/ThemeSwitcher";
+import { AssetsPanel } from "../components/AssetsPanel";
 import { LogOut, RefreshCw, Loader2, Inbox } from "lucide-react";
 
 export default function Admin() {
   const [authed, setAuthed] = useState(!!localStorage.getItem("vortex_token"));
+  const [tab, setTab] = useState("enquiries");
   const [creds, setCreds] = useState({ email: "", password: "" });
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -97,6 +99,23 @@ export default function Admin() {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 md:px-10 py-12">
+        <div className="flex items-center gap-1 mb-10 border-b vx-border">
+          {[["enquiries", "Enquiries"], ["assets", "Total Assets Available"]].map(([k, label]) => (
+            <button
+              key={k}
+              data-testid={`admin-tab-${k}`}
+              onClick={() => setTab(k)}
+              className={`font-mono text-xs uppercase tracking-widest px-4 py-3 border-b-2 -mb-px transition-colors ${
+                tab === k ? "border-[#F0B90B] text-[#F0B90B]" : "border-transparent vx-muted hover:vx-text"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {tab === "assets" ? <AssetsPanel /> : (
+        <>
         <div className="flex items-baseline justify-between mb-8">
           <h1 className="font-head text-3xl md:text-4xl font-bold vx-text">OTC Lead Requests</h1>
           <span data-testid="lead-count" className="font-mono text-[#F0B90B]">{leads.length} total</span>
@@ -132,6 +151,8 @@ export default function Admin() {
               </tbody>
             </table>
           </div>
+        )}
+        </>
         )}
       </div>
     </div>

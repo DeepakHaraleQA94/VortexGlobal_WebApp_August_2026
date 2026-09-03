@@ -479,6 +479,74 @@ async def company_put(payload: dict, user: dict = Depends(get_current_user)):
     return await get_company_doc()
 
 
+DEFAULT_ASSETS = {"usdt_balance": 56740.00, "inr_rate": 99.60}
+
+
+async def get_assets_doc():
+    doc = await db.assets.find_one({"_id": "singleton"})
+    if not doc:
+        doc = {"_id": "singleton", **DEFAULT_ASSETS}
+        await db.assets.insert_one(doc)
+    balance = round(doc.get("usdt_balance", 0), 2)
+    rate = doc.get("inr_rate", 99.60)
+    return {"usdt_balance": balance, "inr_rate": rate, "inr_value": round(balance * rate, 2)}
+
+
+class AssetTxn(BaseModel):
+    type: str  # withdraw | send | receive
+    amount: float
+    note: Optional[str] = ""
+    counterparty: Optional[str] = ""
+
+
+@api_router.get("/assets")
+async def assets_get(user: dict = Depends(get_current_user)):
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return await get_assets_doc()
+
+
+@api_router.get("/assets/transactions")
+async def assets_txns(user: dict = Depends(get_current_user)):
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    docs = await db.asset_transactions.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return docs
+
+
+@api_router.post("/assets/transaction")
+async def assets_transaction(payload: AssetTxn, user: dict = Depends(get_current_user)):
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    if payload.type not in ("withdraw", "send", "receive"):
+        raise HTTPException(status_code=400, detail="Invalid transaction type")
+    if payload.amount <= 0:
+        raise HTTPException(status_code=400, detail="Amount must be greater than zero")
+    current = await get_assets_doc()
+    balance = current["usdt_balance"]
+    if payload.type in ("withdraw", "send"):
+        if payload.amount > balance:
+            raise HTTPException(status_code=400, detail="Insufficient USDT balance")
+        balance -= payload.amount
+    else:
+        balance += payload.amount
+    balance = round(balance, 2)
+    await db.assets.update_one({"_id": "singleton"}, {"$set": {"usdt_balance": balance}}, upsert=True)
+    txn = {
+        "id": str(uuid.uuid4()),
+        "type": payload.type,
+        "amount": round(payload.amount, 2),
+        "note": payload.note or "",
+        "counterparty": payload.counterparty or "",
+        "balance_after": balance,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.asset_transactions.insert_one(dict(txn))
+    result = await get_assets_doc()
+    result["transaction"] = txn
+    return result
+
+
 app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
