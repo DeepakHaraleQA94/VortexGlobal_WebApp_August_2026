@@ -1,6 +1,6 @@
 export const PHONES = [
   { label: "+91 93597 31639", href: "tel:+919359731639" },
-  { label: "+91 72194 50687", href: "tel:+917219450687" },
+  { label: "+91 82620 30386", href: "tel:+918262030386" },
 ];
 
 export const WHATSAPP = [
