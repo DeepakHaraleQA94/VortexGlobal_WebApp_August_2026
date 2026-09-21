@@ -6,6 +6,7 @@ import { ThemeSwitcher } from "./ThemeSwitcher";
 const NAV = [
   { label: "Services", id: "services" },
   { label: "Assets", id: "assets" },
+  { label: "Trades", id: "trades" },
   { label: "Manifesto", id: "manifesto" },
   { label: "AI Desk", id: "insights" },
   { label: "Locations", id: "locations" },

@@ -2,6 +2,7 @@ import { Header } from "../components/Header";
 import { Hero } from "../components/Hero";
 import { PriceTicker } from "../components/PriceTicker";
 import { Highlights } from "../components/Highlights";
+import { TotalTrades } from "../components/TotalTrades";
 import { Stats } from "../components/Stats";
 import { Services } from "../components/Services";
 import { Tokens } from "../components/Tokens";
@@ -22,6 +23,7 @@ export default function Landing() {
       <PriceTicker />
       <Highlights />
       <Stats />
+      <TotalTrades />
       <Services />
       <Tokens />
       <Manifesto />
